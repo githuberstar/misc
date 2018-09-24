@@ -54,11 +54,9 @@ def write_into_csv(count, start):
     # writer.writerow(['电影名称', '豆瓣评分', '我的评分', '我的评语', '评分时间'])
     all_movies = get_all_movies(access_token, user_id, count, start)
     total_amount = all_movies[1]  # 看过的电影总数
-    times = total_amount % count
-    print(times)
-    for i in range(1, times):
-        # start = (i-1)*50 + 1
-        start = 1500
+    times = total_amount // count  # /是精确除法，//是向下取整，%是求余
+    for i in range(1, times + 2):
+        start = (i-1)*50 + 1
         marked_movie_list = get_all_movies(access_token, user_id, count, start)[0]['interests']  # 看过的所有电影列表
         # number = 0
         for marked_movie in marked_movie_list:  # 从看过的所有电影列表中循环并格式化输出到csv文件
