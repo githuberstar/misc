@@ -24,11 +24,15 @@ def log_in(username, password):
 
     }
     conn_url.request("POST", api_url, parse.urlencode(request_body), headers)
-    response_body = conn_url.getresponse().read().decode("utf-8")
-    access_token_dict = json.loads(response_body)
-    access_token_str = access_token_dict['access_token']
-    user_id_no = access_token_dict['douban_user_id']
-    return access_token_str, user_id_no
+    response = conn_url.getresponse()
+    if response.code == 200:
+        response_body = response.read().decode("utf-8")
+        access_token_dict = json.loads(response_body)
+        return access_token_dict
+    elif response.code == 400:
+        return 'bad request'
+    else:
+        return 'others'
 
 
 def get_all_movies(access_token_str, user_id_no, count, start):
@@ -72,8 +76,8 @@ def write_into_csv(count, start):
 
 if __name__ == "__main__":
     user_name = "zhujihui1991@gmail.com"
-    pass_word = "Zhujihui6578602%"
+    pass_word = "Zhujihui6578602"
     log_in_return = log_in(user_name, pass_word)
-    access_token = log_in_return[0]
-    user_id = log_in_return[1]
+    access_token = log_in_return['access_token']
+    user_id = log_in_return['douban_user_id']
     write_into_csv(50, 1)
